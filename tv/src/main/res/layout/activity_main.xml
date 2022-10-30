@@ -1,18 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_browse_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/general_tv_padding"
     tools:context=".MainActivity"
     tools:deviceIds="tv"
     tools:ignore="MergeRootFrame">
 
+    <ImageButton
+        android:id="@+id/btSearch"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/fastlane_background"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@id/rvPhotos"
+        android:src="@drawable/ic_baseline_search_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/lb_tv_white" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hola mundo"
-        android:gravity="center"
-        android:textColor="@color/lb_tv_white"
-        android:textSize="50sp"/>
-</FrameLayout>
+        android:text="@string/app_name_separated"
+        android:textAllCaps="true"
+        android:textSize="@dimen/lb_browse_title_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/btSearch"
+        app:layout_constraintTop_toTopOf="@id/btSearch" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/title_main_screen_initial"
+        android:textSize="@dimen/lb_details_description_title_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btSearch" />
+
+    <androidx.leanback.widget.VerticalGridView
+        android:id="@+id/rvPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:nextFocusUp="@id/btSearch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

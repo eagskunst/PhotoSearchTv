@@ -4,5 +4,8 @@ data class PhotoEntity(
     val url: String,
     val title: String,
     val creatorName: String,
-    val dateUploadedTimestamp: Long
-)
+    val dateUploadedTimestamp: Long,
+    val dateFormatted: String
+) {
+    fun creatorNameWithDate(separator: Char = '/') = "$creatorName $separator $dateFormatted"
+}

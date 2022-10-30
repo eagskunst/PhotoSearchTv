@@ -38,7 +38,9 @@ class MainViewModel @Inject constructor(
                 } else {
                     _photos.value = MainViewState.GeneralError
                 }
+                return@launch
             }
+            //we know it must be success
             val photosPaginationInfo = photosResult.getOrThrow()
             if (currentState is MainViewState.Loading) {
                 _photos.value = MainViewState.Photos(

@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface ImageService {
 
     companion object {
-        const val ITEMS_PER_AGE = 10
+        const val ITEMS_PER_AGE = 9
     }
 
     @GET(".")

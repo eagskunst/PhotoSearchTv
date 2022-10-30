@@ -2,8 +2,8 @@ package com.eagskunst.photosearch.commons
 
 import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -64,11 +64,13 @@ class FragmentViewBindingDelegate<T : ViewBinding>(
 fun <T : ViewBinding> Fragment.viewBinding(viewBindingFactory: (View) -> T) =
     FragmentViewBindingDelegate(this, viewBindingFactory)
 
-inline fun <T : ViewBinding> AppCompatActivity.viewBinding(
+inline fun <T : ViewBinding> FragmentActivity.viewBinding(
     crossinline bindingInflater: (LayoutInflater) -> T
 ) = lazy(LazyThreadSafetyMode.NONE) {
     bindingInflater.invoke(layoutInflater)
 }
 
-fun <T : ViewBinding> RecyclerView.ViewHolder.viewBinding(viewBindingFactory: (View) -> T) =
-    viewBindingFactory(itemView)
+inline fun <T : ViewBinding> RecyclerView.ViewHolder.viewBinding(crossinline viewBindingFactory: (View) -> T) =
+    lazy(LazyThreadSafetyMode.NONE) {
+        viewBindingFactory(itemView)
+    }

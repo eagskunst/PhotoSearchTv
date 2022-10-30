@@ -2,7 +2,7 @@
 
     <style name="Theme.PhotoSearch" parent="@style/Theme.Leanback" />
 
-    <style name="Theme.PhotoSearch.NoActionBar">
+    <style name="Theme.PhotoSearch.NoActionBar" parent="Theme.Leanback">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
