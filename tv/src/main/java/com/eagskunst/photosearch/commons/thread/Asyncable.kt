@@ -6,6 +6,7 @@ import com.eagskunst.photosearch.commons.Success
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 interface Asyncable {
 
@@ -14,6 +15,7 @@ interface Asyncable {
             val res = block()
             Success(res)
         } catch (e: Exception) {
+            Timber.e(e, "Exception running safely")
             ErrorResult(e.cause ?: Exception(""))
         }
     }
@@ -22,7 +24,7 @@ interface Asyncable {
         launch { block() }
     }
 
-    suspend fun runDeferred(block: suspend () -> Unit) = coroutineScope {
-        async { block }
+    suspend fun <T> runDeferred(block: suspend () -> T) = coroutineScope {
+        async { runSafely(block) }
     }
 }

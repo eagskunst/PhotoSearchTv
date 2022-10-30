@@ -37,6 +37,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <meta-data
+            android:name="flickrApiKey"
+            android:value="${FLICKR_API_KEY}" />
     </application>
 
 </manifest>
