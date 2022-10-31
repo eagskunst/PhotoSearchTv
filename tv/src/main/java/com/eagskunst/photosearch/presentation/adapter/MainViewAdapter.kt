@@ -1,6 +1,5 @@
 package com.eagskunst.photosearch.presentation.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.eagskunst.photosearch.MainActivity
 import com.eagskunst.photosearch.R
+import com.eagskunst.photosearch.commons.inflate
 import com.eagskunst.photosearch.commons.viewBinding
 import com.eagskunst.photosearch.databinding.ViewHolderPhotoBinding
 import com.eagskunst.photosearch.domain.entity.PhotoEntity
@@ -29,11 +29,10 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_holder_photo, parent, false).also {
-                it.isFocusable = true
-                it.isFocusableInTouchMode = true
-            }
+        val view = parent.inflate(R.layout.view_holder_photo).apply {
+            isFocusable = true
+            isFocusableInTouchMode = true
+        }
         return PhotoViewHolder(view)
     }
 
@@ -57,9 +56,9 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
             holder.binding.ivFlickrPhoto.isFocusable = true
             holder.itemView.nextFocusUpId = R.id.ivFlickrPhoto
         }
-        val validNotifyLoadMorePosition =
-            listOf(photoList.lastIndex - 2, photoList.lastIndex - 1, photoList.lastIndex)
         holder.itemView.setOnFocusChangeListener { _, hasFocus ->
+            val validNotifyLoadMorePosition =
+                listOf(photoList.lastIndex - 2, photoList.lastIndex - 1, photoList.lastIndex)
             val isValidLoadMorePos = position in validNotifyLoadMorePosition
             if (isValidLoadMorePos && hasFocus) {
                 endReachCallback()

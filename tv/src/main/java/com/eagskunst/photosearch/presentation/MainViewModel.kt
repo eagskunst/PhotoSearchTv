@@ -22,7 +22,6 @@ class MainViewModel @Inject constructor(
     private val searchPhotos: SearchPhotos,
 ) : ViewModel() {
 
-    var titleText: String = ""
     var searchTerm: String = ""
     private val _photos = MutableLiveData<MainViewState>(MainViewState.Loading)
     val photos: LiveData<MainViewState>
@@ -30,10 +29,10 @@ class MainViewModel @Inject constructor(
     var isFromFeed = true
 
     fun obtainPhotosFromFeed(page: Int) {
-        val currentState = changeStateToLoading(searchTerm)
+        val currentState = getCurrentStateAndChangeToLoading(searchTerm)
         viewModelScope.launch {
             val photosResult = getPhotosFromFeed(page)
-            handlePhotosResult(photosResult, currentState)
+            handlePhotosResult(photosResult, currentState, searchTerm)
         }
     }
 
@@ -43,12 +42,13 @@ class MainViewModel @Inject constructor(
         if (text == searchTerm && page == currentPage) {
             return
         }
-        val currentState = changeStateToLoading(text)
+
+        val currentState = getCurrentStateAndChangeToLoading(text)
         searchTerm = text
         viewModelScope.launch {
             val photosResult = searchPhotos(text, page)
-            titleText = "Search results for \"$searchTerm\""
-            handlePhotosResult(photosResult, currentState)
+            val titleText = "Search results for \"$searchTerm\""
+            handlePhotosResult(photosResult, currentState, titleText)
         }
     }
 
@@ -58,7 +58,8 @@ class MainViewModel @Inject constructor(
 
     private fun handlePhotosResult(
         photosResult: DataResult<PhotoPaginationInfoEntity>,
-        currentState: MainViewState?
+        currentState: MainViewState?,
+        titleText: String
     ) {
         if (photosResult is ErrorResult) {
             if (currentState is MainViewState.Photos) {
@@ -99,7 +100,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun changeStateToLoading(text: String): MainViewState {
+    private fun getCurrentStateAndChangeToLoading(text: String): MainViewState {
         viewModelScope.coroutineContext.cancelChildren()
         var currentState = _photos.value ?: MainViewState.Loading
         if (text != searchTerm) {

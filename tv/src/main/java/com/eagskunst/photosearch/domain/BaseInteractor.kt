@@ -35,9 +35,4 @@ abstract class BaseInteractor(protected val internalDispatchers: CoroutineDispat
 
         return ErrorResult(errorResult.throwable, newInfo)
     }
-
-    companion object {
-        private const val MESSAGE_KEY = "message"
-        private const val ERROR_KEY = "error"
-    }
 }

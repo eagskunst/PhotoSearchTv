@@ -40,18 +40,14 @@ class MainActivity : FragmentActivity() {
         setContentView(binding.root)
         setupRecyclerView()
         setupClicks()
-        viewModel.titleText = getString(R.string.title_main_screen_initial)
+        viewModel.searchTerm = getString(R.string.title_main_screen_initial)
         viewModel.photos.observe(this) { state ->
             Timber.d("Photos result: $state")
             binding.rvPhotos.post {
                 handleState(state)
-                if (state is MainViewState.Photos) {
-                    photosAdapter.photoList = state.photoList
-                    binding.tvTitle.text = state.text
-                }
             }
         }
-        viewModel.obtainPhotosFromFeed(1)
+        viewModel.obtainPhotosFromFeed(page = 1)
     }
 
     private fun handleState(state: MainViewState?) {
@@ -79,6 +75,8 @@ class MainActivity : FragmentActivity() {
             }
             is MainViewState.Photos -> {
                 noMorePhotosAdapter.isEmpty = false
+                photosAdapter.photoList = state.photoList
+                binding.tvTitle.text = state.text
                 allAdapters.removeAdapter(loadingAdapter)
                 allAdapters.addAdapter(photosAdapter)
             }
@@ -94,9 +92,6 @@ class MainActivity : FragmentActivity() {
             adapter = allAdapters
             isFocusable = true
             isFocusableInTouchMode = true
-            setOnFocusChangeListener { _, b ->
-                Timber.d("recyclerview focus: $b")
-            }
         }
     }
 

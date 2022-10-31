@@ -11,8 +11,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btSearch"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/search_button_size"
+        android:layout_height="@dimen/search_button_size"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:insetLeft="0dp"
@@ -21,10 +21,10 @@
         android:insetBottom="0dp"
         android:nextFocusDown="@id/rvPhotos"
         app:backgroundTint="@color/button_color"
-        app:cornerRadius="50dp"
+        app:cornerRadius="@dimen/search_button_radius"
         app:icon="@drawable/ic_baseline_search_24"
         app:iconGravity="textStart"
-        app:iconSize="40dp"
+        app:iconSize="@dimen/search_button_icon_size"
         app:iconTint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -68,7 +68,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/common_home_margin"
         android:text="@string/title_main_screen_initial"
         android:textSize="@dimen/lb_details_description_title_text_size"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,7 +79,7 @@
         android:id="@+id/rvPhotos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/common_home_margin"
         android:nextFocusUp="@id/btSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />

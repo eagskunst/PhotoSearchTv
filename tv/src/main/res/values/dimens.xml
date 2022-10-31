@@ -2,4 +2,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="general_tv_padding">50dp</dimen>
     <dimen name="pb_size">150dp</dimen>
+    <dimen name="search_button_size">80dp</dimen>
+    <dimen name="search_button_icon_size">40dp</dimen>
+    <dimen name="search_button_radius">50dp</dimen>
+    <dimen name="common_home_margin">20dp</dimen>
+    <dimen name="card_photo_height">250dp</dimen>
+    <dimen name="common_card_horizontal_margin">10dp</dimen>
 </resources>
