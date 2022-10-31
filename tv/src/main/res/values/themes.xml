@@ -1,8 +1,8 @@
 <resources>
 
-    <style name="Theme.PhotoSearch" parent="@style/Theme.Leanback" />
+    <style name="Theme.PhotoSearch" parent="@style/Theme.MaterialComponents" />
 
-    <style name="Theme.PhotoSearch.NoActionBar" parent="Theme.Leanback">
+    <style name="Theme.PhotoSearch.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

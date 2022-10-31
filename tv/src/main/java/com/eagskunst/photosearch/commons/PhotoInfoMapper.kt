@@ -14,6 +14,7 @@ class PhotoInfoMapper @Inject constructor() : Mapper<PhotoInfo, PhotoEntity> {
     override suspend fun map(value: PhotoInfo): PhotoEntity {
         val uploadTimestamp = value.dateUploaded.toLong()
         return PhotoEntity(
+            id = value.id,
             url = buildUrl(value),
             title = value.title.content.ifEmpty { "Photo" },
             creatorName = value.owner.username,

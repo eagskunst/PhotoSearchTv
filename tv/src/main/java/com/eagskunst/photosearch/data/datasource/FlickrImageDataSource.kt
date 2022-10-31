@@ -23,6 +23,7 @@ class FlickrImageDataSource @Inject constructor(
     }
 
     suspend fun getPhotosFeedOf(page: Int): DataResult<PhotoPaginationInfoEntity> {
+        Timber.d("Searching photos of feed for page $page")
         return when (val photoFeed = runSafely { imageService.getPublicFeedImages(page) }) {
             is ErrorResult -> ErrorResult(photoFeed.throwable, photoFeed.errorInfo)
             is Success -> obtainPhotoInfo(photoFeed)
@@ -30,6 +31,7 @@ class FlickrImageDataSource @Inject constructor(
     }
 
     suspend fun searchPhotosFeedOf(text: String, page: Int): DataResult<PhotoPaginationInfoEntity> {
+        Timber.d("Searching photos of $text for page #$page")
         return when (val photoFeed = runSafely { imageService.searchImages(text, page) }) {
             is ErrorResult -> ErrorResult(photoFeed.throwable, photoFeed.errorInfo)
             is Success -> obtainPhotoInfo(photoFeed)

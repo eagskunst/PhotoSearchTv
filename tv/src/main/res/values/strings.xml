@@ -27,4 +27,5 @@
     <string name="dismiss_error">Dismiss</string>
     <string name="app_name_separated">Photo search</string>
     <string name="title_main_screen_initial">Trending now on Flickr</string>
+    <string name="search_hint_text">Search</string>
 </resources>
