@@ -16,6 +16,7 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
 
     var requestSearchFocus: () -> Unit = {}
     var endReachCallback: () -> Unit = {}
+    var clickCallback: (position: Int) -> Unit = {}
     var photoList = listOf<PhotoEntity>()
         set(value) {
             val diffCallback = MainViewDiffCallback(field, value)
@@ -39,6 +40,7 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         setFocusLogic(holder, position)
         holder.bind(photoList[position])
+        holder.itemView.setOnClickListener { clickCallback(position) }
     }
 
     private fun setFocusLogic(

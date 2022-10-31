@@ -110,6 +110,13 @@ class MainActivity : FragmentActivity() {
             }
             false
         }
+        photosAdapter.clickCallback = { pos ->
+            val photosState = viewModel.getPhotosState()
+            if (photosState != null) {
+                val intent = DetailActivity.createIntent(this, photosState, pos)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun openKeyboard() {

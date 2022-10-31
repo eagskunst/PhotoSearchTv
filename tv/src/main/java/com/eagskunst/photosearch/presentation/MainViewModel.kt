@@ -132,4 +132,25 @@ class MainViewModel @Inject constructor(
         }
         return
     }
+
+    fun getPhotosState(): PhotoPaginationInfoEntity? {
+        when (val currentState = _photos.value) {
+            is MainViewState.Photos -> return PhotoPaginationInfoEntity(
+                0,
+                0,
+                currentState.photoList
+            )
+            is MainViewState.LoadingMore -> return PhotoPaginationInfoEntity(
+                0,
+                0,
+                currentState.photos.photoList
+            )
+            is MainViewState.NoMorePhotos -> return PhotoPaginationInfoEntity(
+                0,
+                0,
+                currentState.photoList
+            )
+            else -> return null
+        }
+    }
 }
