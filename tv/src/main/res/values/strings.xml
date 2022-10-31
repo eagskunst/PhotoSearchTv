@@ -28,4 +28,7 @@
     <string name="app_name_separated">Photo search</string>
     <string name="title_main_screen_initial">Trending now on Flickr</string>
     <string name="search_hint_text">Search</string>
+    <string name="label_generic_error">An error occurred. Try again later</string>
+    <string name="label_no_photo_found">No search results for %s</string>
+    <string name="label_no_more_photos_found">No more photos found for %s</string>
 </resources>

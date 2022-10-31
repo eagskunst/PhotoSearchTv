@@ -7,11 +7,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.ConcatAdapter
 import com.eagskunst.photosearch.commons.viewBinding
 import com.eagskunst.photosearch.databinding.ActivityMainBinding
-import com.eagskunst.photosearch.presentation.MainViewAdapter
 import com.eagskunst.photosearch.presentation.MainViewModel
 import com.eagskunst.photosearch.presentation.MainViewState
+import com.eagskunst.photosearch.presentation.adapter.ErrorAdapter
+import com.eagskunst.photosearch.presentation.adapter.LoadingAdapter
+import com.eagskunst.photosearch.presentation.adapter.MainViewAdapter
+import com.eagskunst.photosearch.presentation.adapter.NoMorePhotosAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -24,7 +28,12 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(ActivityMainBinding::inflate)
+
+    private val allAdapters = ConcatAdapter()
+    private val loadingAdapter = LoadingAdapter()
     private val photosAdapter = MainViewAdapter()
+    private val noMorePhotosAdapter = NoMorePhotosAdapter(this)
+    private val errorAdapter = ErrorAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +43,55 @@ class MainActivity : FragmentActivity() {
         viewModel.titleText = getString(R.string.title_main_screen_initial)
         viewModel.photos.observe(this) { state ->
             Timber.d("Photos result: $state")
-            if (state is MainViewState.Photos) {
-                photosAdapter.photoList = state.photoList
-                binding.tvTitle.text = state.text
+            binding.rvPhotos.post {
+                handleState(state)
+                if (state is MainViewState.Photos) {
+                    photosAdapter.photoList = state.photoList
+                    binding.tvTitle.text = state.text
+                }
             }
         }
         viewModel.obtainPhotosFromFeed(1)
     }
 
+    private fun handleState(state: MainViewState?) {
+        if (state == null) {
+            return
+        }
+        when (state) {
+            MainViewState.GeneralError -> {
+                allAdapters.removeAdapter(loadingAdapter)
+                allAdapters.addAdapter(errorAdapter)
+            }
+            MainViewState.Loading -> {
+                noMorePhotosAdapter.isEmpty = true
+                allAdapters.removeAdapter(photosAdapter)
+                allAdapters.removeAdapter(loadingAdapter)
+                allAdapters.removeAdapter(noMorePhotosAdapter)
+                allAdapters.addAdapter(loadingAdapter)
+            }
+            is MainViewState.LoadingMore -> {
+                allAdapters.addAdapter(loadingAdapter)
+            }
+            is MainViewState.NoMorePhotos -> {
+                allAdapters.removeAdapter(loadingAdapter)
+                allAdapters.addAdapter(noMorePhotosAdapter)
+            }
+            is MainViewState.Photos -> {
+                noMorePhotosAdapter.isEmpty = false
+                allAdapters.removeAdapter(loadingAdapter)
+                allAdapters.addAdapter(photosAdapter)
+            }
+        }
+    }
+
     private fun setupRecyclerView() {
         photosAdapter.requestSearchFocus = { binding.btSearch.requestFocus() }
+        photosAdapter.endReachCallback = { viewModel.paginate() }
         with(binding.rvPhotos) {
             setNumColumns(COLUMNS)
             setColumnWidth(0)
-            adapter = photosAdapter
+            adapter = allAdapters
             isFocusable = true
             isFocusableInTouchMode = true
             setOnFocusChangeListener { _, b ->
@@ -62,7 +106,10 @@ class MainActivity : FragmentActivity() {
         }
         binding.etSearchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.searchPhotosOf(binding.etSearchText.text.toString())
+                viewModel.searchPhotosOf(
+                    text = binding.etSearchText.text.toString(),
+                    page = 1
+                )
                 binding.etSearchText.clearFocus()
                 binding.ilSearch.isVisible = false
                 return@setOnEditorActionListener true

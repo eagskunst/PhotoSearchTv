@@ -1,4 +1,4 @@
-package com.eagskunst.photosearch.presentation
+package com.eagskunst.photosearch.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.eagskunst.photosearch.domain.entity.PhotoEntity

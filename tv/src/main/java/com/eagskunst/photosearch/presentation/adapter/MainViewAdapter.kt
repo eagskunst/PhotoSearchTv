@@ -1,4 +1,4 @@
-package com.eagskunst.photosearch.presentation
+package com.eagskunst.photosearch.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +15,7 @@ import com.eagskunst.photosearch.domain.entity.PhotoEntity
 class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() {
 
     var requestSearchFocus: () -> Unit = {}
+    var endReachCallback: () -> Unit = {}
     var photoList = listOf<PhotoEntity>()
         set(value) {
             val diffCallback = MainViewDiffCallback(field, value)
@@ -37,18 +38,17 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        setFocusToSearchLogic(holder, position)
+        setFocusLogic(holder, position)
         holder.bind(photoList[position])
     }
 
-    private fun setFocusToSearchLogic(
+    private fun setFocusLogic(
         holder: PhotoViewHolder,
         position: Int
     ) {
         holder.binding.ivFlickrPhoto.isFocusable = false
         holder.binding.ivFlickrPhoto.setOnFocusChangeListener { v, hasFocus ->
-            //val entity = v.tag
-            if (hasFocus /*&& entity == photoList[position]*/) {
+            if (hasFocus) {
                 v.clearFocus()
                 requestSearchFocus()
             }
@@ -56,7 +56,14 @@ class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() 
         if (position < MainActivity.COLUMNS) {
             holder.binding.ivFlickrPhoto.isFocusable = true
             holder.itemView.nextFocusUpId = R.id.ivFlickrPhoto
-            //holder.binding.ivFlickrPhoto.tag = photoList[position]
+        }
+        val validNotifyLoadMorePosition =
+            listOf(photoList.lastIndex - 2, photoList.lastIndex - 1, photoList.lastIndex)
+        holder.itemView.setOnFocusChangeListener { _, hasFocus ->
+            val isValidLoadMorePos = position in validNotifyLoadMorePosition
+            if (isValidLoadMorePos && hasFocus) {
+                endReachCallback()
+            }
         }
     }
 

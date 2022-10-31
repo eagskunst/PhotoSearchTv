@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eagskunst.photosearch.commons.DataResult
 import com.eagskunst.photosearch.commons.ErrorResult
+import com.eagskunst.photosearch.commons.exception.EmptyPhotosException
 import com.eagskunst.photosearch.domain.entity.PhotoPaginationInfoEntity
 import com.eagskunst.photosearch.domain.interactor.GetPhotosFromFeed
 import com.eagskunst.photosearch.domain.interactor.SearchPhotos
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,27 +23,31 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     var titleText: String = ""
+    var searchTerm: String = ""
     private val _photos = MutableLiveData<MainViewState>(MainViewState.Loading)
     val photos: LiveData<MainViewState>
         get() = _photos
+    var isFromFeed = true
 
     fun obtainPhotosFromFeed(page: Int) {
-        val currentState = changeStateToLoading(titleText)
+        val currentState = changeStateToLoading(searchTerm)
         viewModelScope.launch {
             val photosResult = getPhotosFromFeed(page)
             handlePhotosResult(photosResult, currentState)
         }
     }
 
-    fun searchPhotosOf(text: String) {
-        if (text == titleText) {
+    fun searchPhotosOf(text: String, page: Int) {
+        isFromFeed = false
+        val currentPage = obtainCurrentPage(_photos.value ?: MainViewState.Loading)
+        if (text == searchTerm && page == currentPage) {
             return
         }
         val currentState = changeStateToLoading(text)
-        val currentPage = obtainCurrentPage(currentState)
+        searchTerm = text
         viewModelScope.launch {
-            val photosResult = searchPhotos(text, currentPage)
-            titleText = "Search results for \"$text\""
+            val photosResult = searchPhotos(text, page)
+            titleText = "Search results for \"$searchTerm\""
             handlePhotosResult(photosResult, currentState)
         }
     }
@@ -59,7 +65,15 @@ class MainViewModel @Inject constructor(
                 _photos.value = MainViewState.NoMorePhotos(
                     photoList = currentState.photoList,
                     page = currentState.page,
-                    text = currentState.text
+                    text = currentState.text,
+                    maxPage = currentState.page
+                )
+            } else if (photosResult.throwable is EmptyPhotosException) {
+                _photos.value = MainViewState.NoMorePhotos(
+                    photoList = emptyList(),
+                    page = 0,
+                    text = titleText,
+                    maxPage = 0
                 )
             } else {
                 _photos.value = MainViewState.GeneralError
@@ -72,13 +86,15 @@ class MainViewModel @Inject constructor(
             _photos.value = MainViewState.Photos(
                 photoList = photosPaginationInfo.photos,
                 page = photosPaginationInfo.currentPage,
-                text = titleText
+                text = titleText,
+                maxPage = photosPaginationInfo.maxPage
             )
         } else if (currentState is MainViewState.Photos) {
             _photos.value = MainViewState.Photos(
                 photoList = currentState.photoList + photosPaginationInfo.photos,
                 page = photosPaginationInfo.currentPage,
-                text = titleText
+                text = titleText,
+                maxPage = photosPaginationInfo.maxPage
             )
         }
     }
@@ -86,7 +102,7 @@ class MainViewModel @Inject constructor(
     private fun changeStateToLoading(text: String): MainViewState {
         viewModelScope.coroutineContext.cancelChildren()
         var currentState = _photos.value ?: MainViewState.Loading
-        if (text != titleText) {
+        if (text != searchTerm) {
             _photos.value = MainViewState.Loading
             currentState = MainViewState.Loading
         } else if (currentState is MainViewState.Photos) {
@@ -96,5 +112,23 @@ class MainViewModel @Inject constructor(
             currentState = MainViewState.Loading
         }
         return currentState
+    }
+
+    fun paginate() {
+        val currentState = _photos.value
+        Timber.d("Current state: $currentState")
+        if (currentState is MainViewState.Loading ||
+            currentState is MainViewState.LoadingMore ||
+            currentState !is MainViewState.Photos
+        ) {
+            return
+        }
+        val currentPage = currentState.page
+        if (isFromFeed) {
+            obtainPhotosFromFeed(currentPage + 1)
+        } else {
+            searchPhotosOf(searchTerm, currentPage + 1)
+        }
+        return
     }
 }

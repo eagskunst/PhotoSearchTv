@@ -1,4 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="general_tv_padding">50dp</dimen>
+    <dimen name="pb_size">150dp</dimen>
 </resources>

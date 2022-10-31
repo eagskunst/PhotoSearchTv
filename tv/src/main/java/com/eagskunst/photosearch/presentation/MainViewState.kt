@@ -9,12 +9,14 @@ sealed class MainViewState {
         val photoList: List<PhotoEntity>,
         val page: Int,
         val text: String = "",
+        val maxPage: Int,
     ) : MainViewState()
 
     data class NoMorePhotos(
         val photoList: List<PhotoEntity>,
         val page: Int,
         val text: String = "",
+        val maxPage: Int,
     ) : MainViewState()
 
     object GeneralError : MainViewState()
