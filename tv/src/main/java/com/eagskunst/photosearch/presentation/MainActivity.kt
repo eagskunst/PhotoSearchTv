@@ -1,4 +1,4 @@
-package com.eagskunst.photosearch
+package com.eagskunst.photosearch.presentation
 
 import android.content.Context
 import android.os.Bundle
@@ -8,10 +8,9 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.ConcatAdapter
+import com.eagskunst.photosearch.R
 import com.eagskunst.photosearch.commons.viewBinding
 import com.eagskunst.photosearch.databinding.ActivityMainBinding
-import com.eagskunst.photosearch.presentation.MainViewModel
-import com.eagskunst.photosearch.presentation.MainViewState
 import com.eagskunst.photosearch.presentation.adapter.ErrorAdapter
 import com.eagskunst.photosearch.presentation.adapter.LoadingAdapter
 import com.eagskunst.photosearch.presentation.adapter.MainViewAdapter

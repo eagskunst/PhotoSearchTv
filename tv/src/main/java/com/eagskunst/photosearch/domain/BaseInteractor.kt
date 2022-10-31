@@ -1,18 +1,14 @@
 package com.eagskunst.photosearch.domain
 
-import com.bumptech.glide.load.HttpException
 import com.eagskunst.photosearch.commons.DataResult
 import com.eagskunst.photosearch.commons.ErrorMessage
 import com.eagskunst.photosearch.commons.ErrorResult
 import com.eagskunst.photosearch.commons.thread.Asyncable
 import com.eagskunst.photosearch.commons.thread.CoroutineDispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
-
-/**
- * Created by eagskunst in 25/7/2020.
- */
 
 abstract class BaseInteractor(protected val internalDispatchers: CoroutineDispatchers) : Asyncable {
 

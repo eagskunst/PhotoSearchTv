@@ -19,7 +19,7 @@
         android:name=".PhotoSearchApp"
         android:theme="@style/Theme.PhotoSearch">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:banner="@drawable/app_icon_your_company"
             android:exported="true"
             android:icon="@drawable/app_icon_your_company"

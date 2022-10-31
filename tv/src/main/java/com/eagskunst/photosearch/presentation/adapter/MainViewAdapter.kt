@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.eagskunst.photosearch.MainActivity
 import com.eagskunst.photosearch.R
 import com.eagskunst.photosearch.commons.inflate
 import com.eagskunst.photosearch.commons.viewBinding
 import com.eagskunst.photosearch.databinding.ViewHolderPhotoBinding
 import com.eagskunst.photosearch.domain.entity.PhotoEntity
+import com.eagskunst.photosearch.presentation.MainActivity
 
 class MainViewAdapter : RecyclerView.Adapter<MainViewAdapter.PhotoViewHolder>() {
 
